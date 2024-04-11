@@ -7,7 +7,7 @@ model:
 data:
   class_path: datasets.flowers102.Flowers102DataModule
   init_args:
-    data_dir: './runs/datasets/flowers102'
+    data_dir: './runs/datasets'
     batch_size: 5
     num_workers: 2
 trainer:
