@@ -11,6 +11,7 @@ data:
     batch_size: 5
     num_workers: 2
 trainer:
+  num_sanity_val_steps: 0
   limit_train_batches: 0.25
   limit_val_batches: 0.25
   limit_test_batches: 0.25
@@ -27,9 +28,9 @@ trainer:
     - class_path: "lightning.pytorch.callbacks.EarlyStopping"
       init_args:
         monitor: "val/loss"
-    - class_path: "lightning.pytorch.callbacks.ModelSummary"
-      init_args:
-        max_depth: 2
+#    - class_path: "lightning.pytorch.callbacks.ModelSummary"
+#      init_args:
+#        max_depth: 2
     - class_path: "lightning.pytorch.callbacks.TQDMProgressBar"
       init_args:
         refresh_rate: 5
