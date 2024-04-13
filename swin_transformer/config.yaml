@@ -16,11 +16,14 @@ trainer:
   limit_val_batches: 0.25
   limit_test_batches: 0.25
   logger:
-    class_path: "lightning.pytorch.loggers.TensorBoardLogger"
+    # class_path: "lightning.pytorch.loggers.TensorBoardLogger"
+    # init_args:
+    #   save_dir: "."
+    #   name: "runs"
+    #   default_hp_metric: false
+    class_path: "lightning.pytorch.loggers.WandbLogger"
     init_args:
-      save_dir: "."
-      name: "runs"
-      default_hp_metric: false
+      project: "eeem004"
   callbacks:
     - class_path: "lightning.pytorch.callbacks.LearningRateMonitor"
       init_args:

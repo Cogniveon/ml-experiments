@@ -7,6 +7,7 @@ if __name__ == "__main__":
         pl.LightningDataModule,
         subclass_mode_model=True,
         subclass_mode_data=True,
+        save_config_callback=False,
         trainer_defaults={
             "max_epochs": 10,
             "log_every_n_steps": 5,
