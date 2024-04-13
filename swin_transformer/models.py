@@ -1,5 +1,5 @@
-import torchmetrics
 import torch
+import torchmetrics
 import lightning.pytorch as pl
 import torch.nn as nn
 
@@ -16,10 +16,7 @@ class SwinTransformer(pl.LightningModule):
 
         self.example_input_array = torch.Tensor(1, 3, 224, 224)
         self.learning_rate = learning_rate
-
-        self.accuracy = torchmetrics.Accuracy(
-            task="multiclass", num_classes=num_classes
-        )
+        self.num_classes = num_classes
 
         self.save_hyperparameters()
 
@@ -28,29 +25,38 @@ class SwinTransformer(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         tensors, targets = batch
-        outputs = self.model(tensors)
-        loss = nn.functional.cross_entropy(outputs, targets)
-        self.accuracy.update(nn.functional.softmax(outputs, dim=-1).argmax(), targets)
+        logits = self.model(tensors)
+        loss = nn.functional.cross_entropy(logits, targets)
+        preds = nn.functional.softmax(logits, dim=-1)
+        accuracy = torchmetrics.functional.accuracy(
+            preds, targets, task="multiclass", num_classes=self.num_classes
+        )
         self.log("train/loss", loss)
-        self.log("train/acc", self.accuracy)
+        self.log("train/acc", accuracy)
         return {"loss": loss}
 
     def validation_step(self, batch, batch_idx):
         tensors, targets = batch
-        outputs = self.model(tensors)
-        val_loss = nn.functional.cross_entropy(outputs, targets)
-        self.accuracy.update(nn.functional.softmax(outputs, dim=-1).argmax(), targets)
+        logits = self.model(tensors)
+        val_loss = nn.functional.cross_entropy(logits, targets)
+        preds = nn.functional.softmax(logits, dim=-1)
+        accuracy = torchmetrics.functional.accuracy(
+            preds, targets, task="multiclass", num_classes=self.num_classes
+        )
         self.log("val/loss", val_loss)
-        self.log("val/acc", self.accuracy)
+        self.log("val/acc", accuracy)
         return {"loss", val_loss}
 
     def test_step(self, batch, batch_idx):
         tensors, targets = batch
-        outputs = self.model(tensors)
-        test_loss = nn.functional.cross_entropy(outputs, targets)
-        self.accuracy.update(nn.functional.softmax(outputs, dim=-1).argmax(), targets)
+        logits = self.model(tensors)
+        test_loss = nn.functional.cross_entropy(logits, targets)
+        preds = nn.functional.softmax(logits, dim=-1)
+        accuracy = torchmetrics.functional.accuracy(
+            preds, targets, task="multiclass", num_classes=self.num_classes
+        )
         self.log("test/loss", test_loss)
-        self.log("test/acc", self.accuracy)
+        self.log("test/acc", accuracy)
 
     def predict_step(self, tensors, batch_idx):
         pred = self.model(tensors)

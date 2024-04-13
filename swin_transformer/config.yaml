@@ -2,28 +2,29 @@ seed_everything: 6839323
 model:
   class_path: swin_transformer.models.SwinTransformer
   init_args:
-    num_classes: 102
-    learning_rate: 0.001
+    num_classes: 10
+    learning_rate: 0.01
 data:
-  class_path: datasets.flowers102.Flowers102DataModule
+  class_path: datasets.cifar10.CIFAR10DataModule
   init_args:
     data_dir: './runs/datasets'
     batch_size: 5
-    num_workers: 2
+    num_workers: 7
 trainer:
+  max_epochs: 2
   num_sanity_val_steps: 0
   limit_train_batches: 0.25
   limit_val_batches: 0.25
   limit_test_batches: 0.25
   logger:
-    # class_path: "lightning.pytorch.loggers.TensorBoardLogger"
-    # init_args:
-    #   save_dir: "."
-    #   name: "runs"
-    #   default_hp_metric: false
-    class_path: "lightning.pytorch.loggers.WandbLogger"
+    class_path: "lightning.pytorch.loggers.TensorBoardLogger"
     init_args:
-      project: "eeem004"
+      save_dir: "."
+      name: "runs"
+      default_hp_metric: false
+    # class_path: "lightning.pytorch.loggers.WandbLogger"
+    # init_args:
+    #   project: "eeem004"
   callbacks:
     - class_path: "lightning.pytorch.callbacks.LearningRateMonitor"
       init_args:

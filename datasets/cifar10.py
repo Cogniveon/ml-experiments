@@ -6,7 +6,7 @@ import torchvision.transforms.v2 as transforms
 from torch.utils.data import DataLoader
 
 
-class Flowers102DataModule(pl.LightningDataModule):
+class CIFAR10DataModule(pl.LightningDataModule):
     def __init__(self, data_dir: str, batch_size: int = 8, num_workers: int = 2):
         super().__init__()
         self.data_dir = data_dir
@@ -22,37 +22,34 @@ class Flowers102DataModule(pl.LightningDataModule):
         )
 
     def prepare_data(self):
-        torchvision.datasets.Flowers102(
-            root=self.data_dir, split="train", download=True
-        )
-        torchvision.datasets.Flowers102(root=self.data_dir, split="test", download=True)
-        torchvision.datasets.Flowers102(root=self.data_dir, split="val", download=True)
+        torchvision.datasets.CIFAR10(root=self.data_dir, train=True, download=True)
+        torchvision.datasets.CIFAR10(root=self.data_dir, train=False, download=True)
 
     def setup(self, stage: str):
         if stage == "fit":
-            self.flowers_train = torchvision.datasets.Flowers102(
+            self.cifar_train = torchvision.datasets.CIFAR10(
                 root=self.data_dir,
-                split="train",
+                train=True,
                 download=True,
                 transform=self.transform,
             )
 
         if stage == "predict" or stage == "test":
-            self.flowers_test = torchvision.datasets.Flowers102(
+            self.cifar_test = torchvision.datasets.CIFAR10(
                 root=self.data_dir,
-                split="test",
+                train=False,
                 download=True,
                 transform=self.transform,
             )
 
         if stage == "fit":
-            self.flowers_val = torchvision.datasets.Flowers102(
-                root=self.data_dir, split="val", download=True, transform=self.transform
+            self.cifar_val = torchvision.datasets.CIFAR10(
+                root=self.data_dir, train=False, download=True, transform=self.transform
             )
 
     def train_dataloader(self):
         return DataLoader(
-            self.flowers_train,
+            self.cifar_train,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             persistent_workers=True,
@@ -61,7 +58,7 @@ class Flowers102DataModule(pl.LightningDataModule):
 
     def val_dataloader(self):
         return DataLoader(
-            self.flowers_val,
+            self.cifar_val,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             persistent_workers=True,
@@ -69,7 +66,7 @@ class Flowers102DataModule(pl.LightningDataModule):
 
     def test_dataloader(self):
         return DataLoader(
-            self.flowers_test,
+            self.cifar_test,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             persistent_workers=True,
@@ -77,7 +74,7 @@ class Flowers102DataModule(pl.LightningDataModule):
 
     def predict_dataloader(self):
         return DataLoader(
-            self.flowers_test,
+            self.cifar_test,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             persistent_workers=True,
