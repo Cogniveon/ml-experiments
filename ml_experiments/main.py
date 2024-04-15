@@ -1,8 +1,9 @@
 import lightning.pytorch as pl
 from lightning.pytorch.cli import LightningCLI
 
-if __name__ == "__main__":
-    cli = LightningCLI(
+
+def lightning_cli():
+    LightningCLI(
         pl.LightningModule,
         pl.LightningDataModule,
         subclass_mode_model=True,
@@ -13,3 +14,7 @@ if __name__ == "__main__":
             "enable_model_summary": False,
         },
     )
+
+
+if __name__ == "__main__":
+    lightning_cli()

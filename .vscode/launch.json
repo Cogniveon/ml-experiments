@@ -8,7 +8,7 @@
             "name": "Debug training",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/train.py",
+            "module": "ml_experiments",
             "console": "integratedTerminal",
             // "args": "${command:pickArgs}",
             "args": "fit --config swin_transformer/config.yaml"
